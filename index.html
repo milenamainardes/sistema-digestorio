@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Construa o Sistema Digestório</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #f0f7f6;
+      --card-bg: #ffffff;
+      --mint: #25857b;
+      --mint-dark: #174742;
+      --mint-light: #e6f7f4;
+      --gold: #d69e2e;
+      --coral: #e53e3e;
+      --coral-soft: #fed7d7;
+      --purple: #805ad5;
+      --purple-light: #faf5ff;
+      --text: #2d3748;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --success: #38a169;
+      --radius: 16px;
+      --shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px;
+      overflow-x: hidden;
+    }
+
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 920px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    header {
+      background: var(--card-bg);
+      padding: 14px 20px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    h1 {
+      font-family: 'Fredoka', cursive;
+      font-size: 1.45rem;
+      color: var(--mint-dark);
+    }
+
+    .btn-reset {
+      background: #edf2f7;
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all 0.2s;
+    }
+
+    .btn-reset:hover {
+      background: var(--coral-soft);
+      color: #9b2c2c;
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      height: 12px;
+      background: #e2e8f0;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--mint), var(--gold));
+      transition: width 0.4s ease;
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 6px;
+      background: #edf2f7;
+      padding: 6px;
+      border-radius: var(--radius);
+      overflow-x: auto;
+    }
+
+    .nav-tab {
+      flex: 1;
+      min-width: 75px;
+      padding: 9px 6px;
+      text-align: center;
+      font-size: 0.78rem;
+      font-weight: 800;
+      background: transparent;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .nav-tab.active {
+      background: var(--card-bg);
+      color: var(--mint-dark);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .nav-tab:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .screen {
+      display: none;
+      background: var(--card-bg);
+      padding: 18px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      min-height: 540px;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
+    .level-header h2 {
+      font-family: 'Fredoka', cursive;
+      font-size: 1.3rem;
+      color: var(--mint-dark);
+    }
+
+    .level-header p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* ÁREA DO CORPO E ENCAIXES */
+    .l1-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    @media (min-width: 760px) {
+      .l1-grid {
+        grid-template-columns: 360px 1fr;
+      }
+    }
+
+    .anatomy-stage {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px;
+    }
+
+    .mannequin-container {
+      position: relative;
+      width: 100%;
+      max-width: 330px;
+      aspect-ratio: 422 / 591;
+    }
+
+    .body-bg-img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: fill;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .dropzone, .placed-organ {
+      position: absolute;
+      transition: all 0.2s ease;
+    }
+
+    .dropzone {
+      z-index: 10;
+      border: 2px dashed rgba(37, 133, 123, 0.45);
+      background-color: rgba(37, 133, 123, 0.06);
+      border-radius: 12px;
+      cursor: pointer;
+    }
+
+    .dropzone:hover, .dropzone.highlight {
+      border: 2.5px solid var(--mint);
+      background-color: rgba(37, 133, 123, 0.28);
+    }
+
+    .dropzone.error-shake {
+      animation: shake 0.35s ease;
+      border-color: var(--coral) !important;
+      background-color: rgba(229, 62, 62, 0.25) !important;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translate(0, 0); }
+      20%, 60% { transform: translate(-6px, 0); }
+      40%, 80% { transform: translate(6px, 0); }
+    }
+
+    .placed-organ {
+      display: none;
+      object-fit: fill;
+      pointer-events: none;
+    }
+
+    .placed-organ.visible {
+      display: block;
+      animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.7); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* POSICIONAMENTO ANATÔMICO */
+    #zone-boca, #img-boca {
+      left: 23.22%;
+      top: 9.31%;
+      width: 27.25%;
+      height: 19.46%;
+    }
+    #img-boca { z-index: 3; }
+
+    #zone-esofago, #img-esofago {
+      left: 28.44%;
+      top: 24.53%;
+      width: 25.83%;
+      height: 24.7%;
+    }
+    #img-esofago { z-index: 2; }
+
+    #zone-estomago, #img-estomago {
+      left: 25.12%;
+      top: 44.33%;
+      width: 34.36%;
+      height: 24.53%;
+    }
+    #img-estomago { z-index: 5; }
+
+    #zone-delgado, #img-delgado {
+      left: 15.4%;
+      top: 60.07%;
+      width: 68.96%;
+      height: 26.73%;
+    }
+    #img-delgado { z-index: 4; }
+
+    #zone-grosso, #img-grosso {
+      left: 13.74%;
+      top: 59.22%;
+      width: 72.04%;
+      height: 28.09%;
+    }
+    #img-grosso { z-index: 6; }
+
+    /* BARRA LATERAL */
+    .l1-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .organ-inventory {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 10px;
+    }
+
+    .organ-card {
+      background: #f8fafc;
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      cursor: grab;
+      touch-action: none;
+      transition: all 0.2s;
+    }
+
+    .organ-card:active {
+      cursor: grabbing;
+    }
+
+    .organ-card.selected {
+      border-color: var(--mint);
+      background: var(--mint-light);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(37, 133, 123, 0.2);
+    }
+
+    .organ-card.placed {
+      opacity: 0.35;
+      pointer-events: none;
+      border-style: dashed;
+      background: #edf2f7;
+    }
+
+    .organ-card-title {
+      font-size: 0.82rem;
+      font-weight: 800;
+      text-align: center;
+      color: #334155;
+    }
+
+    .organ-thumb-img {
+      width: 62px;
+      height: 62px;
+      object-fit: contain;
+    }
+
+    .feedback-box {
+      background: var(--purple-light);
+      border: 1px solid #d6bcfa;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 0.88rem;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      line-height: 1.45;
+    }
+
+    /* NIVEL 2 */
+    .case-card {
+      background: #fffaf0;
+      border: 2px solid #fed7aa;
+      border-radius: var(--radius);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .case-tag {
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: #c2410c;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .case-symptom {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #7c2d12;
+      line-height: 1.45;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    @media (min-width: 500px) {
+      .options-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .btn-option {
+      background: #edf2f7;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 13px;
+      font-weight: 700;
+      font-size: 0.92rem;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s;
+    }
+
+    .btn-option:hover:not(:disabled) {
+      background: #e2e8f0;
+    }
+
+    .btn-option.correct {
+      background: #c6f6d5 !important;
+      border-color: #38a169 !important;
+      color: #1e4620;
+    }
+
+    .btn-option.incorrect {
+      background: #fed7d7 !important;
+      border-color: #e53e3e !important;
+      color: #742a2a;
+    }
+
+    .diagnosis-feedback {
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      display: none;
+      line-height: 1.4;
+    }
+
+    /* NIVEL 3 */
+    .pouch-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .cards-pool {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      min-height: 56px;
+    }
+
+    .nutrient-card {
+      background: white;
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 14px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: grab;
+      touch-action: none;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      transition: all 0.2s;
+    }
+
+    .nutrient-card.selected {
+      border-color: var(--mint);
+      background: var(--mint-light);
+      transform: scale(1.05);
+    }
+
+    .boxes-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    @media (min-width: 540px) {
+      .boxes-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .target-box {
+      border: 2px dashed #cbd5e0;
+      border-radius: var(--radius);
+      padding: 16px;
+      min-height: 170px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .target-box.absorb {
+      background: #f0fff4;
+      border-color: #9ae6b4;
+    }
+
+    .target-box.eliminate {
+      background: #fff5f5;
+      border-color: #feb2b2;
+    }
+
+    .target-box.highlight {
+      transform: scale(1.02);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+    }
+
+    .box-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .box-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .boxed-item {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    /* NIVEL 4 */
+    .l4-container {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .track-flow {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      margin: 10px 0 16px;
+      padding: 0 14px;
+    }
+
+    .track-flow::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 20px;
+      right: 20px;
+      height: 4px;
+      background: #e2e8f0;
+      transform: translateY(-50%);
+      z-index: 1;
+    }
+
+    .track-step {
+      position: relative;
+      z-index: 2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: white;
+      border: 3px solid #cbd5e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      transition: all 0.3s;
+    }
+
+    .track-step.done {
+      background: var(--success);
+      border-color: var(--success);
+      color: white;
+      transform: scale(1.1);
+    }
+
+    .scramble-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .step-card {
+      background: white;
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      font-size: 0.92rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.2s;
+    }
+
+    .step-card:hover {
+      border-color: var(--mint);
+      background: var(--mint-light);
+    }
+
+    .step-card.placed {
+      background: #c6f6d5;
+      border-color: #48bb78;
+      color: #22543d;
+      font-weight: 700;
+      pointer-events: none;
+    }
+
+    /* TELA FINAL */
+    .finish-screen {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      padding: 30px 16px;
+    }
+
+    .trophy-icon {
+      font-size: 4rem;
+      animation: bounce 1.2s infinite alternate;
+    }
+
+    @keyframes bounce {
+      from { transform: translateY(0); }
+      to { transform: translateY(-12px); }
+    }
+
+    .stats-card {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      width: 100%;
+      max-width: 460px;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 0.95rem;
+    }
+
+    .btn-play-again {
+      background: linear-gradient(135deg, var(--mint), var(--mint-dark));
+      color: white;
+      border: none;
+      border-radius: 24px;
+      padding: 14px 36px;
+      font-size: 1.1rem;
+      font-family: 'Fredoka', cursive;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(23, 71, 66, 0.3);
+      transition: all 0.2s;
+    }
+
+    .btn-play-again:hover {
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="container">
+    <header>
+      <div class="header-top">
+        <h1>Construa o Sistema Digestório</h1>
+        <button class="btn-reset" onclick="resetGame()">Reiniciar</button>
+      </div>
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill" id="global-progress"></div>
+      </div>
+      <nav class="nav-tabs">
+        <button class="nav-tab active" id="tab-0" onclick="switchLevel(0)">1. Anatomia</button>
+        <button class="nav-tab" id="tab-1" onclick="switchLevel(1)" disabled>2. Casos</button>
+        <button class="nav-tab" id="tab-2" onclick="switchLevel(2)" disabled>3. Mochila</button>
+        <button class="nav-tab" id="tab-3" onclick="switchLevel(3)" disabled>4. Mistura</button>
+      </nav>
+    </header>
+
+    <!-- NÍVEL 1 -->
+    <main class="screen active" id="screen-0">
+      <div class="level-header">
+        <h2>Nível 1 — Reconhecimento dos Órgãos</h2>
+        <p>Arraste ou selecione o órgão e toque na área correta da cavidade corporal para montá-lo.</p>
+      </div>
+      <div class="l1-grid">
+        <div class="anatomy-stage">
+          <div class="mannequin-container">
+            <img class="body-bg-img" src="corpo.png" alt="Corpo Humano">
+
+            <!-- Zonas de Encaixe -->
+            <div id="zone-boca" class="dropzone" data-target="boca"></div>
+            <div id="zone-esofago" class="dropzone" data-target="esofago"></div>
+            <div id="zone-estomago" class="dropzone" data-target="estomago"></div>
+            <div id="zone-delgado" class="dropzone" data-target="delgado"></div>
+            <div id="zone-grosso" class="dropzone" data-target="grosso"></div>
+
+            <!-- Órgãos Colocados -->
+            <img id="img-boca" class="placed-organ" src="boca.png" alt="Boca">
+            <img id="img-esofago" class="placed-organ" src="esofago.png" alt="Esôfago">
+            <img id="img-estomago" class="placed-organ" src="estomago.png" alt="Estômago">
+            <img id="img-delgado" class="placed-organ" src="delgado.png" alt="Intestino Delgado">
+            <img id="img-grosso" class="placed-organ" src="grosso.png" alt="Intestino Grosso">
+          </div>
+        </div>
+
+        <div class="l1-sidebar">
+          <div class="organ-inventory" id="organ-cards-container">
+            <div class="organ-card" id="card-boca" draggable="true" data-organ="boca" onclick="selectOrgan('boca')">
+              <img class="organ-thumb-img" src="boca.png" alt="Boca">
+              <span class="organ-card-title">Boca</span>
+            </div>
+
+            <div class="organ-card" id="card-esofago" draggable="true" data-organ="esofago" onclick="selectOrgan('esofago')">
+              <img class="organ-thumb-img" src="esofago.png" alt="Esôfago">
+              <span class="organ-card-title">Esôfago</span>
+            </div>
+
+            <div class="organ-card" id="card-estomago" draggable="true" data-organ="estomago" onclick="selectOrgan('estomago')">
+              <img class="organ-thumb-img" src="estomago.png" alt="Estômago">
+              <span class="organ-card-title">Estômago</span>
+            </div>
+
+            <div class="organ-card" id="card-grosso" draggable="true" data-organ="grosso" onclick="selectOrgan('grosso')">
+              <img class="organ-thumb-img" src="grosso.png" alt="Intestino Grosso">
+              <span class="organ-card-title">Intestino Grosso</span>
+            </div>
+
+            <div class="organ-card" id="card-delgado" draggable="true" data-organ="delgado" onclick="selectOrgan('delgado')">
+              <img class="organ-thumb-img" src="delgado.png" alt="Intestino Delgado">
+              <span class="organ-card-title">Intestino Delgado</span>
+            </div>
+          </div>
+
+          <div class="feedback-box" id="l1-info">
+            👉 Toque ou arraste um órgão até a sua posição anatômica correspondente na silhueta.
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- NÍVEL 2 -->
+    <main class="screen" id="screen-1">
+      <div class="level-header">
+        <h2>Nível 2 — 🕵️ Diagnóstico Clínico</h2>
+        <p>O sistema está com problemas! Analise o sintoma do paciente e identifique o órgão responsável.</p>
+      </div>
+      <div class="case-card">
+        <span class="case-tag" id="case-counter">Caso 1 de 3</span>
+        <div class="case-symptom" id="case-text">Carregando caso...</div>
+      </div>
+      <div class="options-grid" id="diagnosis-options"></div>
+      <div class="diagnosis-feedback" id="diagnosis-feedback"></div>
+    </main>
+
+    <!-- NÍVEL 3 -->
+    <main class="screen" id="screen-2">
+      <div class="level-header">
+        <h2>Nível 3 — 🎒 Mochila do Alimento</h2>
+        <p>Separe o que é absorvido pelas vilosidades intestinais do que é eliminado nas fezes.</p>
+      </div>
+      <div class="pouch-container">
+        <div class="cards-pool" id="nutrients-pool"></div>
+        <div class="boxes-grid">
+          <div class="target-box absorb" id="box-absorb" onclick="targetBoxClicked('absorb')">
+            <span class="box-title">✅ Absorvido pelo corpo</span>
+            <div class="box-items" id="items-absorb"></div>
+          </div>
+          <div class="target-box eliminate" id="box-eliminate" onclick="targetBoxClicked('eliminated')">
+            <span class="box-title">🚫 Eliminado (fezes)</span>
+            <div class="box-items" id="items-eliminate"></div>
+          </div>
+        </div>
+        <div class="feedback-box" id="l3-info">
+          Selecione ou arraste um nutriente da mochila para a caixa correta.
+        </div>
+      </div>
+    </main>
+
+    <!-- NÍVEL 4 -->
+    <main class="screen" id="screen-3">
+      <div class="level-header">
+        <h2>Nível 4 — ⚗️ Misture os Ingredientes</h2>
+        <p id="l4-desc">Reconstrua a cadeia de digestão tocando nas etapas na ordem correta.</p>
+      </div>
+      <div class="l4-container">
+        <div class="track-flow">
+          <div class="track-step" id="track-1">1</div>
+          <div class="track-step" id="track-2">2</div>
+          <div class="track-step" id="track-3">3</div>
+        </div>
+        <div class="scramble-cards" id="chain-steps-container"></div>
+        <div class="feedback-box" id="l4-info">
+          Toque na 1ª etapa: o que acontece no início da quebra deste alimento?
+        </div>
+      </div>
+    </main>
+
+    <!-- TELA FINAL -->
+    <main class="screen" id="screen-final">
+      <div class="finish-screen">
+        <div class="trophy-icon">🏆</div>
+        <h2 style="font-family:'Fredoka',cursive; font-size:1.8rem; color:var(--mint-dark);">Parabéns! Sistema Digestório Concluído!</h2>
+        <p style="color:var(--text-muted); max-width:480px;">Você compreendeu a anatomia real dos órgãos, identificou os casos clínicos e desvendou a absorção dos nutrientes com perfeição.</p>
+        <div class="stats-card">
+          <div>✔️ <strong>Anatomia:</strong> Silhueta completa com os 5 órgãos anatômicos integrados.</div>
+          <div>✔️ <strong>Diagnósticos:</strong> Você acertou de primeira <span id="stat-diag-score">0</span> de 3 casos clínicos!</div>
+          <div>✔️ <strong>Mochila do Alimento:</strong> Nutrientes e fibras separados com precisão biológica.</div>
+          <div>✔️ <strong>Cadeias Químicas:</strong> Quebra e absorção de Carboidratos e Proteínas sequenciadas com sucesso.</div>
+        </div>
+        <button class="btn-play-again" onclick="resetGame()">Jogar Novamente</button>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    /* ==========================================================
+       1. WEB AUDIO API
+       ========================================================== */
+    let audioCtx = null;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    function playSound(type) {
+      try {
+        initAudio();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const now = audioCtx.currentTime;
+
+        if (type === 'success') {
+          const osc1 = audioCtx.createOscillator();
+          const osc2 = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+
+          osc1.type = 'triangle';
+          osc2.type = 'sine';
+
+          osc1.frequency.setValueAtTime(523.25, now);
+          osc1.frequency.setValueAtTime(659.25, now + 0.08);
+          osc1.frequency.setValueAtTime(783.99, now + 0.16);
+
+          osc2.frequency.setValueAtTime(1046.50, now + 0.16);
+
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+          osc1.connect(gain);
+          osc2.connect(gain);
+          gain.connect(audioCtx.destination);
+
+          osc1.start(now);
+          osc2.start(now + 0.16);
+          osc1.stop(now + 0.35);
+          osc2.stop(now + 0.35);
+        } else {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, now);
+          osc.frequency.exponentialRampToValueAtTime(110, now + 0.25);
+
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+
+          osc.start(now);
+          osc.stop(now + 0.25);
+        }
+      } catch (e) {}
+    }
+
+    /* ==========================================================
+       2. CONFETES EM CANVAS
+       ========================================================== */
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx = canvas.getContext('2d');
+    let confettiParticles = [];
+    let confettiAnimationId = null;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function triggerConfetti(count = 40) {
+      const colors = ['#25857b', '#d69e2e', '#e53e3e', '#805ad5', '#38a169', '#dd6b20'];
+      for (let i = 0; i < count; i++) {
+        confettiParticles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * (canvas.height * 0.4),
+          w: Math.random() * 8 + 6,
+          h: Math.random() * 8 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          vx: (Math.random() - 0.5) * 6,
+          vy: Math.random() * 4 + 2,
+          tilt: Math.random() * 10,
+          tiltSpeed: Math.random() * 0.1 + 0.05
+        });
+      }
+      if (!confettiAnimationId) animateConfetti();
+    }
+
+    function animateConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      confettiParticles.forEach((p, index) => {
+        p.y += p.vy;
+        p.x += p.vx;
+        p.tilt += p.tiltSpeed;
+
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.rect(p.x, p.y, p.w, p.h);
+        ctx.fill();
+
+        if (p.y > canvas.height) confettiParticles.splice(index, 1);
+      });
+
+      if (confettiParticles.length > 0) {
+        confettiAnimationId = requestAnimationFrame(animateConfetti);
+      } else {
+        cancelAnimationFrame(confettiAnimationId);
+        confettiAnimationId = null;
+      }
+    }
+
+    /* ==========================================================
+       3. ESTADO GLOBAL
+       ========================================================== */
+    const gameState = {
+      unlockedLevels: 1,
+      currentTab: 0,
+      
+      // Nível 1
+      l1Placed: {},
+      l1SelectedOrgan: null,
+      l1Descriptions: {
+        boca: "Boca: Mastigação e início da digestão dos carboidratos pela ação da saliva (amilase salivar).",
+        esofago: "Esôfago: Tubo muscular que transporta o bolo alimentar até o estômago por movimentos peristálticos.",
+        estomago: "Estômago: Digestão química de proteínas através do suco gástrico e do ácido clorídrico.",
+        delgado: "Intestino Delgado: Digestão final e principal local de absorção de água e nutrientes para a corrente sanguínea.",
+        grosso: "Intestino Grosso: Absorção do restante da água, formação das fezes e abrigo da microbiota intestinal."
+      },
+
+      // Nível 2
+      l2CurrentIndex: 0,
+      l2FirstTryCorrectCount: 0,
+      l2AttemptedCurrent: false,
+      l2Cases: [
+        {
+          symptom: "O paciente relata cansaço e fraqueza, mesmo comendo bem. Exames mostram que os nutrientes não estão chegando adequadamente à corrente sanguínea.",
+          answer: "delgado",
+          feedback: "Correto! O Intestino Delgado é a principal central de absorção dos nutrientes vitais."
+        },
+        {
+          symptom: "O paciente sente que a comida 'entala' no peito e demora para descer até o estômago.",
+          answer: "esofago",
+          feedback: "Exato! O Esôfago realiza os movimentos peristálticos para impulsionar a comida até o estômago."
+        },
+        {
+          symptom: "O paciente está com fezes muito líquidas e sinais de desidratação, mesmo bebendo água normalmente.",
+          answer: "grosso",
+          feedback: "Perfeito! O Intestino Grosso é responsável pela absorção do restante da água e consistência das fezes."
+        }
+      ],
+
+      // Nível 3
+      l3Nutrients: [
+        { id: 'glicose', name: 'Glicose 🍬', type: 'absorb' },
+        { id: 'aminoacidos', name: 'Aminoácidos 🧬', type: 'absorb' },
+        { id: 'agua', name: 'Água 💧', type: 'absorb' },
+        { id: 'graxos', name: 'Ácidos graxos 🧈', type: 'absorb' },
+        { id: 'fibras', name: 'Fibras 🌱', type: 'eliminated' }
+      ],
+      l3Selected: null,
+      l3PlacedCount: 0,
+
+      // Nível 4
+      l4Round: 0,
+      l4StepExpected: 0,
+      l4RoundsData: [
+        {
+          nutrient: "Carboidratos 🍞",
+          steps: [
+            { id: 0, text: "Digestão: quebra pela amilase salivar e enzimas intestinais" },
+            { id: 1, text: "Moléculas menores: viram glicose" },
+            { id: 2, text: "Absorção: a glicose passa para o sangue no intestino delgado" }
+          ]
+        },
+        {
+          nutrient: "Proteínas 🥩",
+          steps: [
+            { id: 0, text: "Digestão: quebra pelo ácido clorídrico e enzimas do estômago" },
+            { id: 1, text: "Aminoácidos: unidades básicas das proteínas" },
+            { id: 2, text: "Absorção: os aminoácidos passam para o sangue no intestino delgado" }
+          ]
+        }
+      ]
+    };
+
+    function updateProgressBar() {
+      let total = 0;
+      const l1Count = Object.keys(gameState.l1Placed).length;
+      total += (l1Count / 5) * 25;
+      total += (gameState.l2CurrentIndex / 3) * 25;
+      total += (gameState.l3PlacedCount / 5) * 25;
+      const l4StepsDone = (gameState.l4Round * 3) + gameState.l4StepExpected;
+      total += (Math.min(l4StepsDone, 6) / 6) * 25;
+
+      document.getElementById('global-progress').style.width = Math.min(total, 100) + '%';
+    }
+
+    function switchLevel(tabIndex) {
+      if (tabIndex + 1 > gameState.unlockedLevels) return;
+
+      gameState.currentTab = tabIndex;
+      for (let i = 0; i < 4; i++) {
+        document.getElementById(`tab-${i}`).classList.remove('active');
+        document.getElementById(`screen-${i}`).classList.remove('active');
+      }
+      document.getElementById('screen-final').classList.remove('active');
+
+      document.getElementById(`tab-${tabIndex}`).classList.add('active');
+      document.getElementById(`screen-${tabIndex}`).classList.add('active');
+    }
+
+    function unlockNextLevel(nextLevelIndex) {
+      if (nextLevelIndex + 1 > gameState.unlockedLevels) {
+        gameState.unlockedLevels = nextLevelIndex + 1;
+      }
+      const tabBtn = document.getElementById(`tab-${nextLevelIndex}`);
+      if (tabBtn) tabBtn.disabled = false;
+      triggerConfetti(60);
+      setTimeout(() => switchLevel(nextLevelIndex), 700);
+    }
+
+    /* ==========================================================
+       4. LÓGICA DO NÍVEL 1 (Reconhecimento dos Órgãos)
+       ========================================================== */
+    function initLevel1() {
+      const dropzones = document.querySelectorAll('.dropzone');
+      dropzones.forEach(zone => {
+        zone.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          zone.classList.add('highlight');
+        });
+        zone.addEventListener('dragleave', () => zone.classList.remove('highlight'));
+        zone.addEventListener('drop', (e) => {
+          e.preventDefault();
+          zone.classList.remove('highlight');
+          const organ = e.dataTransfer.getData('text/plain');
+          handleOrganPlacement(organ, zone.dataset.target, zone);
+        });
+        zone.addEventListener('click', () => {
+          if (gameState.l1SelectedOrgan) {
+            handleOrganPlacement(gameState.l1SelectedOrgan, zone.dataset.target, zone);
+          }
+        });
+      });
+
+      const cards = document.querySelectorAll('.organ-card');
+      cards.forEach(card => {
+        card.addEventListener('dragstart', (e) => {
+          e.dataTransfer.setData('text/plain', card.dataset.organ);
+          selectOrgan(card.dataset.organ);
+        });
+      });
+    }
+
+    function selectOrgan(organ) {
+      if (gameState.l1Placed[organ]) return;
+      gameState.l1SelectedOrgan = organ;
+      document.querySelectorAll('.organ-card').forEach(c => c.classList.remove('selected'));
+      const activeCard = document.getElementById(`card-${organ}`);
+      if (activeCard) activeCard.classList.add('selected');
+    }
+
+    function handleOrganPlacement(organ, targetZone, zoneElement) {
+      if (gameState.l1Placed[organ]) return;
+
+      if (organ === targetZone) {
+        playSound('success');
+        triggerConfetti(35);
+        gameState.l1Placed[organ] = true;
+
+        zoneElement.style.display = 'none';
+        const img = document.getElementById(`img-${organ}`);
+        if (img) img.classList.add('visible');
+
+        const card = document.getElementById(`card-${organ}`);
+        if (card) {
+          card.classList.remove('selected');
+          card.classList.add('placed');
+        }
+
+        const info = document.getElementById('l1-info');
+        info.innerHTML = `<strong>Acertou!</strong> ${gameState.l1Descriptions[organ]}`;
+
+        gameState.l1SelectedOrgan = null;
+        updateProgressBar();
+
+        if (Object.keys(gameState.l1Placed).length === 5) {
+          setTimeout(() => unlockNextLevel(1), 1200);
+        }
+      } else {
+        playSound('error');
+        zoneElement.classList.add('error-shake');
+        setTimeout(() => zoneElement.classList.remove('error-shake'), 400);
+
+        const info = document.getElementById('l1-info');
+        info.innerHTML = `❌ Ops! Observe a posição anatômica correta do trato digestivo e tente novamente.`;
+      }
+    }
+
+    /* ==========================================================
+       5. LÓGICA DO NÍVEL 2 (Diagnósticos)
+       ========================================================== */
+    const organNameMap = {
+      boca: "Boca",
+      esofago: "Esôfago",
+      estomago: "Estômago",
+      delgado: "Intestino Delgado",
+      grosso: "Intestino Grosso"
+    };
+
+    function loadDiagnosisCase() {
+      const c = gameState.l2Cases[gameState.l2CurrentIndex];
+      gameState.l2AttemptedCurrent = false;
+
+      document.getElementById('case-counter').innerText = `Caso ${gameState.l2CurrentIndex + 1} de 3`;
+      document.getElementById('case-text').innerText = `"${c.symptom}"`;
+
+      const feedback = document.getElementById('diagnosis-feedback');
+      feedback.style.display = 'none';
+
+      const optionsContainer = document.getElementById('diagnosis-options');
+      optionsContainer.innerHTML = '';
+      const allOrgans = ['boca', 'esofago', 'estomago', 'delgado', 'grosso'].sort(() => Math.random() - 0.5);
+
+      allOrgans.forEach(orgKey => {
+        const btn = document.createElement('button');
+        btn.className = 'btn-option';
+        btn.innerText = organNameMap[orgKey];
+        btn.onclick = () => handleDiagnosisChoice(orgKey, btn);
+        optionsContainer.appendChild(btn);
+      });
+    }
+
+    function handleDiagnosisChoice(chosenOrgan, buttonEl) {
+      const currentCase = gameState.l2Cases[gameState.l2CurrentIndex];
+      const feedback = document.getElementById('diagnosis-feedback');
+      const allBtns = document.querySelectorAll('.btn-option');
+
+      allBtns.forEach(b => b.disabled = true);
+
+      if (chosenOrgan === currentCase.answer) {
+        playSound('success');
+        triggerConfetti(35);
+        buttonEl.classList.add('correct');
+        if (!gameState.l2AttemptedCurrent) {
+          gameState.l2FirstTryCorrectCount++;
+        }
+        feedback.style.display = 'block';
+        feedback.style.background = '#c6f6d5';
+        feedback.style.color = '#1e4620';
+        feedback.innerHTML = `🩺 <strong>Diagnóstico certeiro!</strong> ${currentCase.feedback}`;
+      } else {
+        playSound('error');
+        buttonEl.classList.add('incorrect');
+        gameState.l2AttemptedCurrent = true;
+
+        allBtns.forEach(b => {
+          if (b.innerText === organNameMap[currentCase.answer]) {
+            b.classList.add('correct');
+          }
+        });
+
+        feedback.style.display = 'block';
+        feedback.style.background = '#fed7d7';
+        feedback.style.color = '#742a2a';
+        feedback.innerHTML = `⚠️ <strong>Atenção:</strong> O órgão afetado é o <strong>${organNameMap[currentCase.answer]}</strong>. ${currentCase.feedback}`;
+      }
+
+      gameState.l2CurrentIndex++;
+      updateProgressBar();
+
+      setTimeout(() => {
+        if (gameState.l2CurrentIndex < gameState.l2Cases.length) {
+          loadDiagnosisCase();
+        } else {
+          unlockNextLevel(2);
+        }
+      }, 2400);
+    }
+
+    /* ==========================================================
+       6. LÓGICA DO NÍVEL 3 (Mochila do Alimento)
+       ========================================================== */
+    function initLevel3() {
+      const pool = document.getElementById('nutrients-pool');
+      pool.innerHTML = '';
+      gameState.l3Nutrients.forEach(n => {
+        const card = document.createElement('div');
+        card.className = 'nutrient-card';
+        card.id = `nutrient-${n.id}`;
+        card.innerText = n.name;
+        card.draggable = true;
+
+        card.addEventListener('dragstart', (e) => {
+          e.dataTransfer.setData('text/plain', n.id);
+          selectNutrient(n.id);
+        });
+
+        card.addEventListener('click', () => selectNutrient(n.id));
+        pool.appendChild(card);
+      });
+
+      ['box-absorb', 'box-eliminate'].forEach(id => {
+        const box = document.getElementById(id);
+        box.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          box.classList.add('highlight');
+        });
+        box.addEventListener('dragleave', () => box.classList.remove('highlight'));
+        box.addEventListener('drop', (e) => {
+          e.preventDefault();
+          box.classList.remove('highlight');
+          const nutId = e.dataTransfer.getData('text/plain');
+          const dest = id === 'box-absorb' ? 'absorb' : 'eliminated';
+          handleNutrientDrop(nutId, dest);
+        });
+      });
+    }
+
+    function selectNutrient(id) {
+      gameState.l3Selected = id;
+      document.querySelectorAll('.nutrient-card').forEach(c => c.classList.remove('selected'));
+      const active = document.getElementById(`nutrient-${id}`);
+      if (active) active.classList.add('selected');
+    }
+
+    function targetBoxClicked(dest) {
+      if (gameState.l3Selected) {
+        handleNutrientDrop(gameState.l3Selected, dest);
+      }
+    }
+
+    function handleNutrientDrop(nutId, destination) {
+      const nutrient = gameState.l3Nutrients.find(n => n.id === nutId);
+      if (!nutrient) return;
+
+      const card = document.getElementById(`nutrient-${nutId}`);
+      if (!card || card.style.display === 'none') return;
+
+      const info = document.getElementById('l3-info');
+
+      if (nutrient.type === destination) {
+        playSound('success');
+        triggerConfetti(25);
+        card.style.display = 'none';
+        gameState.l3Selected = null;
+        gameState.l3PlacedCount++;
+
+        const targetList = destination === 'absorb' ? document.getElementById('items-absorb') : document.getElementById('items-eliminate');
+        const badge = document.createElement('div');
+        badge.className = 'boxed-item';
+        badge.innerText = nutrient.name;
+        targetList.appendChild(badge);
+
+        if (nutrient.id === 'fibras') {
+          info.innerHTML = `🌿 <strong>Correto!</strong> As fibras não são digeridas pelo trato humano e formam a matriz das fezes, nutrindo a microbiota.`;
+        } else {
+          info.innerHTML = `💧 <strong>Excelente!</strong> ${nutrient.name} é absorvido pelas células da parede intestinal para a corrente sanguínea.`;
+        }
+
+        updateProgressBar();
+
+        if (gameState.l3PlacedCount === gameState.l3Nutrients.length) {
+          setTimeout(() => unlockNextLevel(3), 1400);
+        }
+      } else {
+        playSound('error');
+        info.innerHTML = `❌ <strong>Atenção:</strong> Analise se o organismo possui maquinário enzimático para degradar e absorver ${nutrient.name}. Tente de novo!`;
+      }
+    }
+
+    /* ==========================================================
+       7. LÓGICA DO NÍVEL 4 (Mistura dos Ingredientes)
+       ========================================================== */
+    function loadLevel4Round() {
+      const rData = gameState.l4RoundsData[gameState.l4Round];
+      document.getElementById('l4-desc').innerText = `Reconstrua a sequência da digestão para: ${rData.nutrient}`;
+      gameState.l4StepExpected = 0;
+
+      for (let i = 1; i <= 3; i++) {
+        const s = document.getElementById(`track-${i}`);
+        s.classList.remove('done');
+        s.innerText = i;
+      }
+
+      const container = document.getElementById('chain-steps-container');
+      container.innerHTML = '';
+
+      const scrambled = [...rData.steps].sort(() => Math.random() - 0.5);
+
+      scrambled.forEach(st => {
+        const div = document.createElement('div');
+        div.className = 'step-card';
+        div.id = `step-card-${st.id}`;
+        div.innerHTML = `<span>${st.text}</span> <span>➕</span>`;
+        div.onclick = () => handleStepCardClick(st.id, div);
+        container.appendChild(div);
+      });
+
+      document.getElementById('l4-info').innerHTML = `Toque na 1ª etapa: o que acontece no início do processo com ${rData.nutrient}?`;
+    }
+
+    function handleStepCardClick(stepId, cardEl) {
+      const rData = gameState.l4RoundsData[gameState.l4Round];
+      const info = document.getElementById('l4-info');
+
+      if (stepId === gameState.l4StepExpected) {
+        playSound('success');
+        triggerConfetti(30);
+        cardEl.classList.add('placed');
+        cardEl.innerHTML = `<span>${rData.steps[stepId].text}</span> <span>✅</span>`;
+
+        const trackEl = document.getElementById(`track-${gameState.l4StepExpected + 1}`);
+        trackEl.classList.add('done');
+        trackEl.innerText = '✓';
+
+        gameState.l4StepExpected++;
+        updateProgressBar();
+
+        if (gameState.l4StepExpected < 3) {
+          info.innerHTML = `Etapa ${gameState.l4StepExpected} confirmada! Qual é a próxima transformação?`;
+        } else {
+          info.innerHTML = `🎉 Cadeia de <strong>${rData.nutrient}</strong> concluída com precisão!`;
+          setTimeout(() => {
+            if (gameState.l4Round === 0) {
+              gameState.l4Round = 1;
+              loadLevel4Round();
+            } else {
+              showFinishScreen();
+            }
+          }, 1500);
+        }
+      } else {
+        playSound('error');
+        info.innerHTML = `❌ Etapa fora de ordem! Pense na sequência fisiológica: quebra inicial ➔ formação de monômeros ➔ absorção.`;
+      }
+    }
+
+    /* ==========================================================
+       8. TELA FINAL E REINÍCIO
+       ========================================================== */
+    function showFinishScreen() {
+      for (let i = 0; i < 4; i++) {
+        document.getElementById(`tab-${i}`).classList.remove('active');
+        document.getElementById(`screen-${i}`).classList.remove('active');
+      }
+      document.getElementById('stat-diag-score').innerText = gameState.l2FirstTryCorrectCount;
+      document.getElementById('screen-final').classList.add('active');
+      triggerConfetti(120);
+    }
+
+    function resetGame() {
+      gameState.unlockedLevels = 1;
+      gameState.currentTab = 0;
+
+      // Nível 1
+      gameState.l1Placed = {};
+      gameState.l1SelectedOrgan = null;
+      document.querySelectorAll('.organ-card').forEach(c => c.classList.remove('placed', 'selected'));
+      document.querySelectorAll('.dropzone').forEach(d => {
+        d.style.display = 'block';
+        d.classList.remove('highlight', 'error-shake');
+      });
+      document.querySelectorAll('.placed-organ').forEach(i => i.classList.remove('visible'));
+      document.getElementById('l1-info').innerHTML = `👉 Toque ou arraste um órgão até a sua posição anatômica correspondente na silhueta.`;
+
+      // Nível 2
+      gameState.l2CurrentIndex = 0;
+      gameState.l2FirstTryCorrectCount = 0;
+      gameState.l2AttemptedCurrent = false;
+
+      // Nível 3
+      gameState.l3Selected = null;
+      gameState.l3PlacedCount = 0;
+      document.getElementById('items-absorb').innerHTML = '';
+      document.getElementById('items-eliminate').innerHTML = '';
+      document.getElementById('l3-info').innerHTML = `Selecione ou arraste um nutriente da mochila para a caixa correta.`;
+
+      // Nível 4
+      gameState.l4Round = 0;
+      gameState.l4StepExpected = 0;
+
+      // Travar abas
+      for (let i = 1; i < 4; i++) {
+        document.getElementById(`tab-${i}`).disabled = true;
+      }
+
+      updateProgressBar();
+      loadDiagnosisCase();
+      initLevel3();
+      loadLevel4Round();
+      switchLevel(0);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initLevel1();
+      loadDiagnosisCase();
+      initLevel3();
+      loadLevel4Round();
+      updateProgressBar();
+    });
+  </script>
+</body>
+</html>
