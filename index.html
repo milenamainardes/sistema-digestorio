@@ -130,10 +130,10 @@
 
     .nav-tab {
       flex: 1;
-      min-width: 75px;
+      min-width: 80px;
       padding: 9px 6px;
       text-align: center;
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       font-weight: 800;
       background: transparent;
       border: none;
@@ -182,7 +182,7 @@
       margin-top: 2px;
     }
 
-    /* ÁREA DO CORPO E ENCAIXES */
+    /* NÍVEL 1 */
     .l1-grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -269,7 +269,6 @@
       100% { transform: scale(1); opacity: 1; }
     }
 
-    /* POSICIONAMENTO ANATÔMICO */
     #zone-boca, #img-boca {
       left: 23.22%;
       top: 9.31%;
@@ -310,7 +309,6 @@
     }
     #img-grosso { z-index: 6; }
 
-    /* BARRA LATERAL */
     .l1-sidebar {
       display: flex;
       flex-direction: column;
@@ -380,7 +378,7 @@
       line-height: 1.45;
     }
 
-    /* NIVEL 2 */
+    /* NÍVEL 2 */
     .case-card {
       background: #fffaf0;
       border: 2px solid #fed7aa;
@@ -454,7 +452,59 @@
       line-height: 1.4;
     }
 
-    /* NIVEL 3 */
+    /* NOVO NÍVEL 3 (FUNÇÕES DOS ÓRGÃOS) */
+    .matching-container {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    @media (min-width: 600px) {
+      .matching-container {
+        grid-template-columns: 1fr 1.6fr;
+      }
+    }
+
+    .matching-col {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .match-item {
+      background: white;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      min-height: 52px;
+      display: flex;
+      align-items: center;
+    }
+
+    .match-item:hover:not(.paired) {
+      border-color: var(--mint);
+      background: var(--mint-light);
+    }
+
+    .match-item.selected {
+      border-color: var(--purple);
+      background: var(--purple-light);
+      transform: translateX(4px);
+    }
+
+    .match-item.paired {
+      background: #c6f6d5;
+      border-color: #48bb78;
+      color: #22543d;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    /* NÍVEL 4 (MOCHILA) */
     .pouch-container {
       display: flex;
       flex-direction: column;
@@ -550,7 +600,7 @@
       font-weight: 700;
     }
 
-    /* NIVEL 4 */
+    /* NÍVEL 5 (MISTURA) */
     .l4-container {
       display: flex;
       flex-direction: column;
@@ -633,7 +683,7 @@
       pointer-events: none;
     }
 
-    /* TELA FINAL */
+    /* TELA FINAL COM AVALIAÇÃO */
     .finish-screen {
       text-align: center;
       display: flex;
@@ -641,7 +691,7 @@
       align-items: center;
       justify-content: center;
       gap: 18px;
-      padding: 30px 16px;
+      padding: 24px 16px;
     }
 
     .trophy-icon {
@@ -660,21 +710,58 @@
       border-radius: var(--radius);
       padding: 16px 20px;
       width: 100%;
-      max-width: 460px;
+      max-width: 480px;
       text-align: left;
       display: flex;
       flex-direction: column;
       gap: 10px;
-      font-size: 0.95rem;
+      font-size: 0.92rem;
+    }
+
+    .actions-row {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    @media (min-width: 480px) {
+      .actions-row {
+        flex-direction: row;
+      }
+    }
+
+    .btn-feedback-form {
+      flex: 1.2;
+      background: linear-gradient(135deg, #d69e2e, #b7791f);
+      color: white;
+      text-decoration: none;
+      border-radius: 20px;
+      padding: 14px 20px;
+      font-size: 0.98rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(183, 121, 31, 0.35);
+      transition: all 0.2s;
+    }
+
+    .btn-feedback-form:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(183, 121, 31, 0.45);
     }
 
     .btn-play-again {
+      flex: 1;
       background: linear-gradient(135deg, var(--mint), var(--mint-dark));
       color: white;
       border: none;
-      border-radius: 24px;
-      padding: 14px 36px;
-      font-size: 1.1rem;
+      border-radius: 20px;
+      padding: 14px 20px;
+      font-size: 0.98rem;
       font-family: 'Fredoka', cursive;
       cursor: pointer;
       box-shadow: 0 4px 12px rgba(23, 71, 66, 0.3);
@@ -702,12 +789,13 @@
       <nav class="nav-tabs">
         <button class="nav-tab active" id="tab-0" onclick="switchLevel(0)">1. Anatomia</button>
         <button class="nav-tab" id="tab-1" onclick="switchLevel(1)" disabled>2. Casos</button>
-        <button class="nav-tab" id="tab-2" onclick="switchLevel(2)" disabled>3. Mochila</button>
-        <button class="nav-tab" id="tab-3" onclick="switchLevel(3)" disabled>4. Mistura</button>
+        <button class="nav-tab" id="tab-2" onclick="switchLevel(2)" disabled>3. Funções</button>
+        <button class="nav-tab" id="tab-3" onclick="switchLevel(3)" disabled>4. Mochila</button>
+        <button class="nav-tab" id="tab-4" onclick="switchLevel(4)" disabled>5. Mistura</button>
       </nav>
     </header>
 
-    <!-- NÍVEL 1 -->
+    <!-- NÍVEL 1: ANATOMIA -->
     <main class="screen active" id="screen-0">
       <div class="level-header">
         <h2>Nível 1 — Reconhecimento dos Órgãos</h2>
@@ -718,14 +806,12 @@
           <div class="mannequin-container">
             <img class="body-bg-img" src="corpo.png" alt="Corpo Humano">
 
-            <!-- Zonas de Encaixe -->
             <div id="zone-boca" class="dropzone" data-target="boca"></div>
             <div id="zone-esofago" class="dropzone" data-target="esofago"></div>
             <div id="zone-estomago" class="dropzone" data-target="estomago"></div>
             <div id="zone-delgado" class="dropzone" data-target="delgado"></div>
             <div id="zone-grosso" class="dropzone" data-target="grosso"></div>
 
-            <!-- Órgãos Colocados -->
             <img id="img-boca" class="placed-organ" src="boca.png" alt="Boca">
             <img id="img-esofago" class="placed-organ" src="esofago.png" alt="Esôfago">
             <img id="img-estomago" class="placed-organ" src="estomago.png" alt="Estômago">
@@ -769,7 +855,7 @@
       </div>
     </main>
 
-    <!-- NÍVEL 2 -->
+    <!-- NÍVEL 2: CASOS CLÍNICOS -->
     <main class="screen" id="screen-1">
       <div class="level-header">
         <h2>Nível 2 — 🕵️ Diagnóstico Clínico</h2>
@@ -783,10 +869,25 @@
       <div class="diagnosis-feedback" id="diagnosis-feedback"></div>
     </main>
 
-    <!-- NÍVEL 3 -->
+    <!-- NOVO NÍVEL 3: ASSOCIAÇÃO DE FUNÇÕES -->
     <main class="screen" id="screen-2">
       <div class="level-header">
-        <h2>Nível 3 — 🎒 Mochila do Alimento</h2>
+        <h2>Nível 3 — 🔗 Funções dos Órgãos</h2>
+        <p>Associe cada órgão à sua função fisiológica exata. Toque em um órgão à esquerda e depois na sua função à direita.</p>
+      </div>
+      <div class="matching-container">
+        <div class="matching-col" id="col-organs"></div>
+        <div class="matching-col" id="col-functions"></div>
+      </div>
+      <div class="feedback-box" id="l-match-info">
+        👉 Escolha um órgão para iniciar a associação.
+      </div>
+    </main>
+
+    <!-- NÍVEL 4: MOCHILA DO ALIMENTO -->
+    <main class="screen" id="screen-3">
+      <div class="level-header">
+        <h2>Nível 4 — 🎒 Mochila do Alimento</h2>
         <p>Separe o que é absorvido pelas vilosidades intestinais do que é eliminado nas fezes.</p>
       </div>
       <div class="pouch-container">
@@ -807,10 +908,10 @@
       </div>
     </main>
 
-    <!-- NÍVEL 4 -->
-    <main class="screen" id="screen-3">
+    <!-- NÍVEL 5: MISTURE OS INGREDIENTES -->
+    <main class="screen" id="screen-4">
       <div class="level-header">
-        <h2>Nível 4 — ⚗️ Misture os Ingredientes</h2>
+        <h2>Nível 5 — ⚗️ Misture os Ingredientes</h2>
         <p id="l4-desc">Reconstrua a cadeia de digestão tocando nas etapas na ordem correta.</p>
       </div>
       <div class="l4-container">
@@ -826,19 +927,25 @@
       </div>
     </main>
 
-    <!-- TELA FINAL -->
+    <!-- TELA FINAL COM LINK DA AVALIAÇÃO -->
     <main class="screen" id="screen-final">
       <div class="finish-screen">
         <div class="trophy-icon">🏆</div>
-        <h2 style="font-family:'Fredoka',cursive; font-size:1.8rem; color:var(--mint-dark);">Parabéns! Sistema Digestório Concluído!</h2>
-        <p style="color:var(--text-muted); max-width:480px;">Você compreendeu a anatomia real dos órgãos, identificou os casos clínicos e desvendou a absorção dos nutrientes com perfeição.</p>
+        <h2 style="font-family:'Fredoka',cursive; font-size:1.8rem; color:var(--mint-dark);">Parabéns! Missão Concluída!</h2>
+        <p style="color:var(--text-muted); max-width:520px;">Você dominou a anatomia, diagnósticos clínicos, funções biológicas e vias de digestão de cada órgão com maestria.</p>
         <div class="stats-card">
-          <div>✔️ <strong>Anatomia:</strong> Silhueta completa com os 5 órgãos anatômicos integrados.</div>
-          <div>✔️ <strong>Diagnósticos:</strong> Você acertou de primeira <span id="stat-diag-score">0</span> de 3 casos clínicos!</div>
-          <div>✔️ <strong>Mochila do Alimento:</strong> Nutrientes e fibras separados com precisão biológica.</div>
-          <div>✔️ <strong>Cadeias Químicas:</strong> Quebra e absorção de Carboidratos e Proteínas sequenciadas com sucesso.</div>
+          <div>✔️ <strong>Anatomia:</strong> Silhueta completada com os 5 órgãos anatômicos.</div>
+          <div>✔️ <strong>Diagnósticos:</strong> <span id="stat-diag-score">0</span> de 3 casos clínicos de primeira.</div>
+          <div>✔️ <strong>Fisiologia:</strong> Todas as funções orgânicas associadas corretamente.</div>
+          <div>✔️ <strong>Mochila & Vias:</strong> Absorção e quebra de nutrientes montadas com sucesso.</div>
         </div>
-        <button class="btn-play-again" onclick="resetGame()">Jogar Novamente</button>
+        
+        <div class="actions-row">
+          <a class="btn-feedback-form" href="https://docs.google.com/forms/d/e/1FAIpQLSc8sZuUUCgivvjw_jy2wo8wESoe2Oy28ezfMB7MSQI2S2_OdQ/viewform?usp=sharing&ouid=108993387807524995595" target="_blank" rel="noopener noreferrer">
+            📝 Avaliar a Atividade (Google Forms)
+          </a>
+          <button class="btn-play-again" onclick="resetGame()">Jogar Novamente</button>
+        </div>
       </div>
     </main>
   </div>
@@ -1002,21 +1109,33 @@
         }
       ],
 
-      // Nível 3
-      l3Nutrients: [
+      // NOVO Nível 3 (Associação de Funções)
+      l3MatchingPairs: [
+        { organ: 'boca', name: 'Boca', desc: 'Mastigação e início da digestão de carboidratos com amilase salivar' },
+        { organ: 'esofago', name: 'Esôfago', desc: 'Condução do bolo alimentar por ondas de movimentos peristálticos' },
+        { organ: 'estomago', name: 'Estômago', desc: 'Digestão química de proteínas por ácido clorídrico e suco gástrico' },
+        { organ: 'delgado', name: 'Intestino Delgado', desc: 'Principal absorção de água e nutrientes para o sangue' },
+        { organ: 'grosso', name: 'Intestino Grosso', desc: 'Absorção de água residual, microbiota e formação do bolo fecal' }
+      ],
+      l3SelectedOrgan: null,
+      l3SelectedFunction: null,
+      l3MatchedCount: 0,
+
+      // Nível 4 (Mochila)
+      l4Nutrients: [
         { id: 'glicose', name: 'Glicose 🍬', type: 'absorb' },
         { id: 'aminoacidos', name: 'Aminoácidos 🧬', type: 'absorb' },
         { id: 'agua', name: 'Água 💧', type: 'absorb' },
         { id: 'graxos', name: 'Ácidos graxos 🧈', type: 'absorb' },
         { id: 'fibras', name: 'Fibras 🌱', type: 'eliminated' }
       ],
-      l3Selected: null,
-      l3PlacedCount: 0,
+      l4Selected: null,
+      l4PlacedCount: 0,
 
-      // Nível 4
-      l4Round: 0,
-      l4StepExpected: 0,
-      l4RoundsData: [
+      // Nível 5 (Mistura)
+      l5Round: 0,
+      l5StepExpected: 0,
+      l5RoundsData: [
         {
           nutrient: "Carboidratos 🍞",
           steps: [
@@ -1038,12 +1157,13 @@
 
     function updateProgressBar() {
       let total = 0;
-      const l1Count = Object.keys(gameState.l1Placed).length;
-      total += (l1Count / 5) * 25;
-      total += (gameState.l2CurrentIndex / 3) * 25;
-      total += (gameState.l3PlacedCount / 5) * 25;
-      const l4StepsDone = (gameState.l4Round * 3) + gameState.l4StepExpected;
-      total += (Math.min(l4StepsDone, 6) / 6) * 25;
+      // 5 níveis = 20% cada
+      total += (Object.keys(gameState.l1Placed).length / 5) * 20;
+      total += (gameState.l2CurrentIndex / 3) * 20;
+      total += (gameState.l3MatchedCount / 5) * 20;
+      total += (gameState.l4PlacedCount / 5) * 20;
+      const l5StepsDone = (gameState.l5Round * 3) + gameState.l5StepExpected;
+      total += (Math.min(l5StepsDone, 6) / 6) * 20;
 
       document.getElementById('global-progress').style.width = Math.min(total, 100) + '%';
     }
@@ -1052,7 +1172,7 @@
       if (tabIndex + 1 > gameState.unlockedLevels) return;
 
       gameState.currentTab = tabIndex;
-      for (let i = 0; i < 4; i++) {
+      for (let i = 0; i < 5; i++) {
         document.getElementById(`tab-${i}`).classList.remove('active');
         document.getElementById(`screen-${i}`).classList.remove('active');
       }
@@ -1073,7 +1193,7 @@
     }
 
     /* ==========================================================
-       4. LÓGICA DO NÍVEL 1 (Reconhecimento dos Órgãos)
+       4. NÍVEL 1: ENCAIXE ANATÔMICO
        ========================================================== */
     function initLevel1() {
       const dropzones = document.querySelectorAll('.dropzone');
@@ -1151,7 +1271,7 @@
     }
 
     /* ==========================================================
-       5. LÓGICA DO NÍVEL 2 (Diagnósticos)
+       5. NÍVEL 2: CASOS CLÍNICOS
        ========================================================== */
     const organNameMap = {
       boca: "Boca",
@@ -1232,12 +1352,100 @@
     }
 
     /* ==========================================================
-       6. LÓGICA DO NÍVEL 3 (Mochila do Alimento)
+       6. NOVO NÍVEL 3: ASSOCIAÇÃO DE FUNÇÕES
        ========================================================== */
-    function initLevel3() {
+    function initLevel3Functions() {
+      const colOrgans = document.getElementById('col-organs');
+      const colFuncs = document.getElementById('col-functions');
+      colOrgans.innerHTML = '';
+      colFuncs.innerHTML = '';
+
+      gameState.l3SelectedOrgan = null;
+      gameState.l3SelectedFunction = null;
+      gameState.l3MatchedCount = 0;
+
+      const organs = [...gameState.l3MatchingPairs].sort(() => Math.random() - 0.5);
+      const funcs = [...gameState.l3MatchingPairs].sort(() => Math.random() - 0.5);
+
+      organs.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'match-item';
+        div.id = `match-org-${item.organ}`;
+        div.innerText = item.name;
+        div.onclick = () => selectMatchingOrgan(item.organ, div);
+        colOrgans.appendChild(div);
+      });
+
+      funcs.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'match-item';
+        div.id = `match-fn-${item.organ}`;
+        div.innerText = item.desc;
+        div.onclick = () => selectMatchingFunction(item.organ, div);
+        colFuncs.appendChild(div);
+      });
+    }
+
+    function selectMatchingOrgan(organKey, el) {
+      if (el.classList.contains('paired')) return;
+      document.querySelectorAll('#col-organs .match-item').forEach(m => m.classList.remove('selected'));
+      el.classList.add('selected');
+      gameState.l3SelectedOrgan = organKey;
+      checkMatchingPair();
+    }
+
+    function selectMatchingFunction(organKey, el) {
+      if (el.classList.contains('paired')) return;
+      document.querySelectorAll('#col-functions .match-item').forEach(m => m.classList.remove('selected'));
+      el.classList.add('selected');
+      gameState.l3SelectedFunction = organKey;
+      checkMatchingPair();
+    }
+
+    function checkMatchingPair() {
+      if (!gameState.l3SelectedOrgan || !gameState.l3SelectedFunction) return;
+
+      const orgEl = document.getElementById(`match-org-${gameState.l3SelectedOrgan}`);
+      const fnEl = document.getElementById(`match-fn-${gameState.l3SelectedFunction}`);
+      const info = document.getElementById('l-match-info');
+
+      if (gameState.l3SelectedOrgan === gameState.l3SelectedFunction) {
+        playSound('success');
+        triggerConfetti(25);
+        orgEl.classList.remove('selected');
+        fnEl.classList.remove('selected');
+        orgEl.classList.add('paired');
+        fnEl.classList.add('paired');
+
+        info.innerHTML = `✅ <strong>Par correto!</strong> Função biológica associada perfeitamente.`;
+        gameState.l3MatchedCount++;
+        gameState.l3SelectedOrgan = null;
+        gameState.l3SelectedFunction = null;
+        updateProgressBar();
+
+        if (gameState.l3MatchedCount === gameState.l3MatchingPairs.length) {
+          info.innerHTML = `🎉 <strong>Todas as funções foram dominadas!</strong> Avançando para o Nível 4...`;
+          setTimeout(() => unlockNextLevel(3), 1300);
+        }
+      } else {
+        playSound('error');
+        info.innerHTML = `❌ Associação incorreta! Revise o papel desse órgão no sistema digestório e tente novamente.`;
+        setTimeout(() => {
+          if (orgEl) orgEl.classList.remove('selected');
+          if (fnEl) fnEl.classList.remove('selected');
+          gameState.l3SelectedOrgan = null;
+          gameState.l3SelectedFunction = null;
+        }, 600);
+      }
+    }
+
+    /* ==========================================================
+       7. NÍVEL 4: MOCHILA DO ALIMENTO
+       ========================================================== */
+    function initLevel4Pouch() {
       const pool = document.getElementById('nutrients-pool');
       pool.innerHTML = '';
-      gameState.l3Nutrients.forEach(n => {
+      gameState.l4Nutrients.forEach(n => {
         const card = document.createElement('div');
         card.className = 'nutrient-card';
         card.id = `nutrient-${n.id}`;
@@ -1271,20 +1479,20 @@
     }
 
     function selectNutrient(id) {
-      gameState.l3Selected = id;
+      gameState.l4Selected = id;
       document.querySelectorAll('.nutrient-card').forEach(c => c.classList.remove('selected'));
       const active = document.getElementById(`nutrient-${id}`);
       if (active) active.classList.add('selected');
     }
 
     function targetBoxClicked(dest) {
-      if (gameState.l3Selected) {
-        handleNutrientDrop(gameState.l3Selected, dest);
+      if (gameState.l4Selected) {
+        handleNutrientDrop(gameState.l4Selected, dest);
       }
     }
 
     function handleNutrientDrop(nutId, destination) {
-      const nutrient = gameState.l3Nutrients.find(n => n.id === nutId);
+      const nutrient = gameState.l4Nutrients.find(n => n.id === nutId);
       if (!nutrient) return;
 
       const card = document.getElementById(`nutrient-${nutId}`);
@@ -1296,8 +1504,8 @@
         playSound('success');
         triggerConfetti(25);
         card.style.display = 'none';
-        gameState.l3Selected = null;
-        gameState.l3PlacedCount++;
+        gameState.l4Selected = null;
+        gameState.l4PlacedCount++;
 
         const targetList = destination === 'absorb' ? document.getElementById('items-absorb') : document.getElementById('items-eliminate');
         const badge = document.createElement('div');
@@ -1313,8 +1521,8 @@
 
         updateProgressBar();
 
-        if (gameState.l3PlacedCount === gameState.l3Nutrients.length) {
-          setTimeout(() => unlockNextLevel(3), 1400);
+        if (gameState.l4PlacedCount === gameState.l4Nutrients.length) {
+          setTimeout(() => unlockNextLevel(4), 1400);
         }
       } else {
         playSound('error');
@@ -1323,12 +1531,12 @@
     }
 
     /* ==========================================================
-       7. LÓGICA DO NÍVEL 4 (Mistura dos Ingredientes)
+       8. NÍVEL 5: MISTURA DOS INGREDIENTES
        ========================================================== */
-    function loadLevel4Round() {
-      const rData = gameState.l4RoundsData[gameState.l4Round];
+    function loadLevel5Round() {
+      const rData = gameState.l5RoundsData[gameState.l5Round];
       document.getElementById('l4-desc').innerText = `Reconstrua a sequência da digestão para: ${rData.nutrient}`;
-      gameState.l4StepExpected = 0;
+      gameState.l5StepExpected = 0;
 
       for (let i = 1; i <= 3; i++) {
         const s = document.getElementById(`track-${i}`);
@@ -1354,30 +1562,30 @@
     }
 
     function handleStepCardClick(stepId, cardEl) {
-      const rData = gameState.l4RoundsData[gameState.l4Round];
+      const rData = gameState.l5RoundsData[gameState.l5Round];
       const info = document.getElementById('l4-info');
 
-      if (stepId === gameState.l4StepExpected) {
+      if (stepId === gameState.l5StepExpected) {
         playSound('success');
         triggerConfetti(30);
         cardEl.classList.add('placed');
         cardEl.innerHTML = `<span>${rData.steps[stepId].text}</span> <span>✅</span>`;
 
-        const trackEl = document.getElementById(`track-${gameState.l4StepExpected + 1}`);
+        const trackEl = document.getElementById(`track-${gameState.l5StepExpected + 1}`);
         trackEl.classList.add('done');
         trackEl.innerText = '✓';
 
-        gameState.l4StepExpected++;
+        gameState.l5StepExpected++;
         updateProgressBar();
 
-        if (gameState.l4StepExpected < 3) {
-          info.innerHTML = `Etapa ${gameState.l4StepExpected} confirmada! Qual é a próxima transformação?`;
+        if (gameState.l5StepExpected < 3) {
+          info.innerHTML = `Etapa ${gameState.l5StepExpected} confirmada! Qual é a próxima transformação?`;
         } else {
           info.innerHTML = `🎉 Cadeia de <strong>${rData.nutrient}</strong> concluída com precisão!`;
           setTimeout(() => {
-            if (gameState.l4Round === 0) {
-              gameState.l4Round = 1;
-              loadLevel4Round();
+            if (gameState.l5Round === 0) {
+              gameState.l5Round = 1;
+              loadLevel5Round();
             } else {
               showFinishScreen();
             }
@@ -1390,10 +1598,10 @@
     }
 
     /* ==========================================================
-       8. TELA FINAL E REINÍCIO
+       9. TELA FINAL E REINÍCIO
        ========================================================== */
     function showFinishScreen() {
-      for (let i = 0; i < 4; i++) {
+      for (let i = 0; i < 5; i++) {
         document.getElementById(`tab-${i}`).classList.remove('active');
         document.getElementById(`screen-${i}`).classList.remove('active');
       }
@@ -1423,33 +1631,39 @@
       gameState.l2AttemptedCurrent = false;
 
       // Nível 3
-      gameState.l3Selected = null;
-      gameState.l3PlacedCount = 0;
+      gameState.l3SelectedOrgan = null;
+      gameState.l3SelectedFunction = null;
+      gameState.l3MatchedCount = 0;
+
+      // Nível 4
+      gameState.l4Selected = null;
+      gameState.l4PlacedCount = 0;
       document.getElementById('items-absorb').innerHTML = '';
       document.getElementById('items-eliminate').innerHTML = '';
       document.getElementById('l3-info').innerHTML = `Selecione ou arraste um nutriente da mochila para a caixa correta.`;
 
-      // Nível 4
-      gameState.l4Round = 0;
-      gameState.l4StepExpected = 0;
+      // Nível 5
+      gameState.l5Round = 0;
+      gameState.l5StepExpected = 0;
 
-      // Travar abas
-      for (let i = 1; i < 4; i++) {
+      for (let i = 1; i < 5; i++) {
         document.getElementById(`tab-${i}`).disabled = true;
       }
 
       updateProgressBar();
       loadDiagnosisCase();
-      initLevel3();
-      loadLevel4Round();
+      initLevel3Functions();
+      initLevel4Pouch();
+      loadLevel5Round();
       switchLevel(0);
     }
 
     window.addEventListener('DOMContentLoaded', () => {
       initLevel1();
       loadDiagnosisCase();
-      initLevel3();
-      loadLevel4Round();
+      initLevel3Functions();
+      initLevel4Pouch();
+      loadLevel5Round();
       updateProgressBar();
     });
   </script>
