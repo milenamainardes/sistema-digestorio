@@ -452,7 +452,7 @@
       line-height: 1.4;
     }
 
-    /* NOVO NÍVEL 3 (FUNÇÕES DOS ÓRGÃOS) */
+    /* NÍVEL 3: ASSOCIAÇÃO DE FUNÇÕES */
     .matching-container {
       display: grid;
       grid-template-columns: 1fr;
@@ -504,7 +504,7 @@
       pointer-events: none;
     }
 
-    /* NÍVEL 4 (MOCHILA) */
+    /* NÍVEL 4: MOCHILA */
     .pouch-container {
       display: flex;
       flex-direction: column;
@@ -600,7 +600,7 @@
       font-weight: 700;
     }
 
-    /* NÍVEL 5 (MISTURA) */
+    /* NÍVEL 5: MISTURA */
     .l4-container {
       display: flex;
       flex-direction: column;
@@ -869,7 +869,7 @@
       <div class="diagnosis-feedback" id="diagnosis-feedback"></div>
     </main>
 
-    <!-- NOVO NÍVEL 3: ASSOCIAÇÃO DE FUNÇÕES -->
+    <!-- NÍVEL 3: ASSOCIAÇÃO DE FUNÇÕES -->
     <main class="screen" id="screen-2">
       <div class="level-header">
         <h2>Nível 3 — 🔗 Funções dos Órgãos</h2>
@@ -927,7 +927,7 @@
       </div>
     </main>
 
-    <!-- TELA FINAL COM LINK DA AVALIAÇÃO -->
+    <!-- TELA FINAL -->
     <main class="screen" id="screen-final">
       <div class="finish-screen">
         <div class="trophy-icon">🏆</div>
@@ -941,7 +941,7 @@
         </div>
         
         <div class="actions-row">
-          <a class="btn-feedback-form" href="https://docs.google.com/forms/d/e/1FAIpQLSc8sZuUUCgivvjw_jy2wo8wESoe2Oy28ezfMB7MSQI2S2_OdQ/viewform?usp=sharing&ouid=108993387807524995595" target="_blank" rel="noopener noreferrer">
+          <a class="btn-feedback-form" href="https://docs.google.com/forms/d/e/1FAIpQLSfxbI-FKkkwzo4MqzqSCrpwHJ9LBz_WOrQqUF2AiXAyYmamcw/viewform?usp=sharing&ouid=100125641968299229946" target="_blank" rel="noopener noreferrer">
             📝 Avaliar a Atividade (Google Forms)
           </a>
           <button class="btn-play-again" onclick="resetGame()">Jogar Novamente</button>
@@ -1109,7 +1109,7 @@
         }
       ],
 
-      // NOVO Nível 3 (Associação de Funções)
+      // Nível 3 (Associação de Funções)
       l3MatchingPairs: [
         { organ: 'boca', name: 'Boca', desc: 'Mastigação e início da digestão de carboidratos com amilase salivar' },
         { organ: 'esofago', name: 'Esôfago', desc: 'Condução do bolo alimentar por ondas de movimentos peristálticos' },
@@ -1157,7 +1157,6 @@
 
     function updateProgressBar() {
       let total = 0;
-      // 5 níveis = 20% cada
       total += (Object.keys(gameState.l1Placed).length / 5) * 20;
       total += (gameState.l2CurrentIndex / 3) * 20;
       total += (gameState.l3MatchedCount / 5) * 20;
@@ -1352,7 +1351,7 @@
     }
 
     /* ==========================================================
-       6. NOVO NÍVEL 3: ASSOCIAÇÃO DE FUNÇÕES
+       6. NÍVEL 3: ASSOCIAÇÃO DE FUNÇÕES
        ========================================================== */
     function initLevel3Functions() {
       const colOrgans = document.getElementById('col-organs');
